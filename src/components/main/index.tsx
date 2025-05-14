@@ -10,38 +10,38 @@ function Main() {
   const [theClimbs, setTheClimbs] = useState<TheClimb>();
   const [selectedBranch, setSelectedBranch] = useState<TheClimbList | undefined>();
 
-useEffect(() => {
-  fetch('/api/theclimb')
-  .then(res => res.json())
-  .then(data => {
-    const res = data.data.reduce((acc: TheClimb, item: {data: TheClimb}) => {
-      return {
-        ...acc,
-        ...item.data,
-      }
-    },{})
-    setTheClimbs(res)
-  })
-  .catch(err => {
-    console.error(err)
-  })
-},[])
+// useEffect(() => {
+//   fetch('/api/theclimb')
+//   .then(res => res.json())
+//   .then(data => {
+//     const res = data.data.reduce((acc: TheClimb, item: {data: TheClimb}) => {
+//       return {
+//         ...acc,
+//         ...item.data,
+//       }
+//     },{})
+//     setTheClimbs(res)
+//   })
+//   .catch(err => {
+//     console.error(err)
+//   })
+// },[])
 
   const onClickLogo = (key: TheClimbList) => {
     setSelectedBranch(key)
   }
 
   console.log("selectedBranch",selectedBranch)
-  // useEffect(() => {
-  //   fetch('/api/test')
-  //     .then(res => res.json())
-  //     .then(data => {
-  //       console.log(data)
-  //     })
-  //     .catch(err => {
-  //       console.error(err)
-  //     })
-  // },[])
+  useEffect(() => {
+    fetch('/api/test')
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+      })
+      .catch(err => {
+        console.error(err)
+      })
+  },[])
 
   return (
     <div className="flex flex-col items-center justify-center">
