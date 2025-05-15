@@ -1,6 +1,6 @@
 'use client'
 
-import { TheClimbBranch, TheClimbList } from '@/types/theClimbTypes'
+import { TheClimbBranch } from '@/types/theClimbTypes'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import Logo from './logo'
