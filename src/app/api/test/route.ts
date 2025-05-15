@@ -27,9 +27,9 @@ const supabase = createClient(
 export async function GET() {
   try {
     // 클라이밍 브랜드 데이터 삽입 있다면 에러 발생 후 패스
-    const { data, error } = await supabase.from('climbing').insert({
-      name: '더클라임',
-    })
+    // const { data, error } = await supabase.from('climbing').insert({
+    //   name: '더클라임',
+    // })
     // await supabase.from('climbing_post').delete().eq('brand', '더클라임')
     // return NextResponse.json({ success: true })
 
