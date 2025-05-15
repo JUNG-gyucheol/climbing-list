@@ -1,76 +1,85 @@
 'use client'
 
-import { THE_CLIMB_LIST, TheClimb, TheClimbList } from "@/types/theClimbTypes";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import Logo from "./logo";
+import { TheClimbBranch, TheClimbList } from '@/types/theClimbTypes'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import Logo from './logo'
+import { createClient } from '@supabase/supabase-js'
+import Link from 'next/link'
 
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string,
+)
 
 function Main() {
-  const [theClimbs, setTheClimbs] = useState<TheClimb>();
-  const [selectedBranch, setSelectedBranch] = useState<TheClimbList | undefined>();
+  const [theClimbs, setTheClimbs] = useState<TheClimbBranch[]>()
+  const [selectedBranch, setSelectedBranch] = useState<undefined | number>()
 
-// useEffect(() => {
-//   fetch('/api/theclimb')
-//   .then(res => res.json())
-//   .then(data => {
-//     const res = data.data.reduce((acc: TheClimb, item: {data: TheClimb}) => {
-//       return {
-//         ...acc,
-//         ...item.data,
-//       }
-//     },{})
-//     setTheClimbs(res)
-//   })
-//   .catch(err => {
-//     console.error(err)
-//   })
-// },[])
+  useEffect(() => {
+    ;(async () => {
+      const { data } = await supabase.from('climbing_branch').select(`
+        *,
+        climbing_post (*)
+      `)
+      console.log(data)
+      setTheClimbs(data as TheClimbBranch[])
+    })()
+  }, [])
 
-  const onClickLogo = (key: TheClimbList) => {
+  const onClickLogo = (key: number) => {
     setSelectedBranch(key)
   }
 
-  console.log("selectedBranch",selectedBranch)
-  useEffect(() => {
-    fetch('/api/test')
-      .then(res => res.json())
-      .then(data => {
-        console.log(data)
-      })
-      .catch(err => {
-        console.error(err)
-      })
-  },[])
+  // useEffect(() => {
+  //   fetch('/api/test')
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data)
+  //     })
+  //     .catch((err) => {
+  //       console.error(err)
+  //     })
+  // }, [])
 
   return (
     <div className="flex flex-col items-center justify-center">
-     <div className="max-w-[600px] w-full flex flex-wrap gap-4 justify-center px-[10px]">
-      {
-       theClimbs && Object.keys(THE_CLIMB_LIST).map((key) => {
-          return (
-            <Logo key={key} climbItem={theClimbs[key as TheClimbList]} onClickLogo={(key: TheClimbList) => onClickLogo(key as TheClimbList)}
-            branch={key as TheClimbList}
-            />
-          )
-        })
-      }
-     </div>
-     {selectedBranch && (
-      <div className="max-w-[600px] w-full flex flex-wrap gap-4 justify-between px-[10px]">
-        {theClimbs && theClimbs[selectedBranch].posts.map((post) => {
-          return <div key={post.link} className="w-[100%] relative aspect-video">
-            <Image src={post.thumbnail} alt={post.link}  
-            width={600}
-            height={600}
-            className="object-cover"
-            />
-          </div>
-        })}
+      <div className="flex w-full max-w-[600px] flex-wrap justify-center gap-4 px-[10px]">
+        {theClimbs &&
+          theClimbs.map((climbingBranch) => {
+            return (
+              <Logo
+                key={climbingBranch.id}
+                climbItem={climbingBranch}
+                onClickLogo={(key) => onClickLogo(key)}
+              />
+            )
+          })}
       </div>
-     )}
+      {selectedBranch && (
+        <div className="flex w-full max-w-[600px] flex-wrap justify-between gap-4 px-[10px]">
+          {theClimbs &&
+            theClimbs
+              .find((branch) => branch.id === selectedBranch)
+              ?.climbing_post.map((post) => {
+                return (
+                  <Link href={post.link} key={post.link} target="_blank">
+                    <div className="relative aspect-video w-[100%]">
+                      <Image
+                        src={post.image}
+                        alt={post.link}
+                        width={600}
+                        height={600}
+                        className="object-cover"
+                      />
+                    </div>
+                  </Link>
+                )
+              })}
+        </div>
+      )}
     </div>
-  );
+  )
 }
 
-export default Main;
+export default Main

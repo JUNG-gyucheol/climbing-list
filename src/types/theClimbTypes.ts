@@ -31,3 +31,25 @@ export type TheClimbItem = {
   export type TheClimb = {
     [key in TheClimbList]: TheClimbItem
   }
+
+
+export type TheClimbPost = {
+  branch_id:number;
+  brand:string;
+  created_at:string;
+  description:string;
+  id:number;
+  image:string;
+  link:string;
+  timestamp:string;
+}
+
+  export type TheClimbBranch = {
+    branch:string;
+    brand:string;
+    created_at:string;
+    id:number;
+    insta_url:string;
+    logo:string;
+    climbing_post: TheClimbPost[]
+  }
