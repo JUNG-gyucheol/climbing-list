@@ -18,10 +18,15 @@ function Main() {
 
   useEffect(() => {
     ;(async () => {
-      const { data } = await supabase.from('climbing_branch').select(`
+      const { data } = await supabase
+        .from('climbing_branch')
+        .select(
+          `
         *,
         climbing_post (*)
-      `)
+      `,
+        )
+        .order('date', { foreignTable: 'climbing_post', ascending: false })
       console.log(data)
       setTheClimbs(data as TheClimbBranch[])
     })()
@@ -31,6 +36,13 @@ function Main() {
     setSelectedBranch(key)
   }
 
+  useEffect(() => {
+    fetch('/api/naver')
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data)
+      })
+  }, [])
   // useEffect(() => {
   //   fetch('/api/test')
   //     .then((res) => res.json())
