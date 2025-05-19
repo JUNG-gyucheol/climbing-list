@@ -64,15 +64,15 @@ void main() {
   float time = uTime;
 
   // 좌우 흔들림 오프셋 (sin으로 진동)
-  float shift = sin(time * 10.0) * 0.02;
-  uv.x += shift;
+  // float shift = sin(time * 10.0) * 0.02;
+  // uv.x += shift;
 
   // RGB 채널 분리 효과 감소 (0.8~1.0 범위로 제한하여 더 안정적인 색상 유지)
-  float r = smoothstep(0.3, 0.7, fract(uv.x + time * 0.05)) * 0.2 + 0.8;
-  float g = smoothstep(0.3, 0.7, fract(uv.x)) * 0.2 + 0.8;
-  float b = smoothstep(0.3, 0.7, fract(uv.x - time * 0.05)) * 0.2 + 0.8;
+  // float r = smoothstep(0.3, 0.7, fract(uv.x + time * 0.05)) * 0.2 + 0.8;
+  // float g = smoothstep(0.3, 0.7, fract(uv.x)) * 0.2 + 0.8;
+  // float b = smoothstep(0.3, 0.7, fract(uv.x - time * 0.05)) * 0.2 + 0.8;
 
-  vec3 glitchColor = vec3(r, g, b) * uColor;
+  vec3 glitchColor = uColor;
 
   gl_FragColor = vec4(glitchColor, uOpacity);
 }
@@ -88,13 +88,13 @@ void main() {
   float time = uTime;
 
   // 좌우 흔들림 오프셋 (sin으로 진동)
-  float shift = sin(time * 10.0) * 0.02;
-  uv.x += shift;
+  // float shift = sin(time * 10.0) * 0.02;
+  // uv.x += shift;
 
   // RGB 채널 분리 효과 감소 (0.8~1.0 범위로 제한하여 더 안정적인 색상 유지)
-  float r = smoothstep(0.3, 0.7, fract(uv.x + time * 0.05)) * 0.2 + 0.8;
+  float r = smoothstep(0.3, 0.7, fract(uv.x + time * 0.05)) * 0.5 + 0.6;
   float g = smoothstep(0.3, 0.7, fract(uv.x)) * 0.2 + 0.8;
-  float b = smoothstep(0.3, 0.7, fract(uv.x - time * 0.05)) * 0.2 + 0.8;
+  float b = smoothstep(0.3, 0.7, fract(uv.x - time * 0.05)) * 0.5 + 0.6;
 
   vec3 glitchColor = vec3(r, g, b) * uColor;
 
@@ -203,14 +203,17 @@ const GlitchText = () => {
       materialRef.current.material.uniforms.uTime.value = clock.getElapsedTime()
       if (timeInCycle > 0.5 && timeInCycle < 1.0) {
         // 마지막 0.1초 동안
-        const randomValue = Math.random() * 2 - 1
-        materialRef2.current.position.x = randomValue
-        materialRef.current.material.uniforms.uOpacity.value = 0.5
+        const randomValue = Math.random() * 0.4 - 0.2
+        materialRef.current.position.x = randomValue
+        materialRef.current.material.uniforms.uOpacity.value = 1.0
       } else {
+        materialRef.current.position.x = 0
         materialRef.current.material.uniforms.uOpacity.value = 1.0
       }
     }
     if (materialRef2.current) {
+      materialRef2.current.material.uniforms.uTime.value =
+        clock.getElapsedTime()
       if (timeInCycle > 0.5 && timeInCycle < 1.0) {
         // 마지막 0.1초 동안
         const randomValue = Math.random() * 2 - 1

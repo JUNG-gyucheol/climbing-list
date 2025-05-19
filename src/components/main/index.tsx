@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import Glitch from './glitch'
-import ClimbingList from './climbingList'
+import VerticalSwiper from './verticalSwiper'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL as string,
@@ -68,17 +68,24 @@ function Main() {
           <OrbitControls enabled={false} />
         </Canvas>
       </div>
-      <div className="flex w-full max-w-[600px] flex-col flex-wrap justify-center gap-4 px-[10px]">
-        {theClimbs &&
-          theClimbs.map((climbingBranch) => {
+      <div className="flex w-full max-w-[600px] flex-col flex-wrap justify-center gap-4">
+        {theClimbs && (
+          <VerticalSwiper
+            theClimbs={theClimbs}
+            onClickLogo={(key) => onClickLogo(key)}
+          />
+        )}
+        {/* {theClimbs &&
+          theClimbs.map((climbingBranch, index) => {
             return (
               <ClimbingList
                 key={climbingBranch.id}
                 theClimb={climbingBranch}
                 onClickLogo={(key) => onClickLogo(key)}
+                index={index}
               />
             )
-          })}
+          })} */}
       </div>
       {selectedBranch && (
         <div className="flex w-full max-w-[600px] flex-wrap justify-between gap-4 px-[10px]">

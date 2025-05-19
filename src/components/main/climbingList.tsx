@@ -7,11 +7,16 @@ import { useState } from 'react'
 const ClimbingList: React.FC<{
   theClimb: TheClimbBranch
   onClickLogo: (key: number) => void
-}> = ({ theClimb, onClickLogo }) => {
+  index: number
+  activeIndex: number
+}> = ({ theClimb, onClickLogo, index, activeIndex }) => {
   //   console.log('theClimb', theClimb)
   const [isOpen, setIsOpen] = useState(false)
+
+  // console.log('slideData', slideData)
   return (
-    <div className="flex w-full gap-[20px] rounded-[10px] bg-white p-[10px]">
+    <div
+      className={`${index === activeIndex ? 'bg-amber-300' : 'scale-95 bg-white opacity-50'} absolute top-[50%] flex h-[600px] w-full translate-y-[-50%] flex-col items-center justify-center gap-[20px] rounded-[10px] border-[1px] border-amber-300 p-[10px] transition-all duration-300`}>
       <div>
         <Logo
           key={theClimb.id}
@@ -38,8 +43,8 @@ const ClimbingList: React.FC<{
           <span className={`${isOpen ? 'rotate-180' : ''}`}>
             <FaChevronDown />
           </span>
-          {isOpen && (
-            <div className="absolute top-[30px] left-0 z-[100] flex w-full cursor-default flex-col rounded-[10px] border-[1px] border-black bg-white p-[10px]">
+          {/* {true && (
+            <div className="top-[30px] left-0 z-[100] flex w-full cursor-default flex-col rounded-[10px] border-[1px] border-black bg-white p-[10px]">
               {theClimb.business_hours.map((hour) => {
                 return (
                   <span key={`${hour[0]}-${hour[1]}`}>
@@ -48,7 +53,16 @@ const ClimbingList: React.FC<{
                 )
               })}
             </div>
-          )}
+          )} */}
+        </div>
+        <div className="top-[30px] left-0 z-[100] flex w-full cursor-default flex-col rounded-[10px] border-[1px] border-black bg-white p-[10px]">
+          {theClimb.business_hours.map((hour) => {
+            return (
+              <span key={`${hour[0]}-${hour[1]}`}>
+                {hour[0]} {hour[1]}
+              </span>
+            )
+          })}
         </div>
       </div>
     </div>
