@@ -1,28 +1,7 @@
 import puppeteer from 'puppeteer'
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-const the_climb = [
-  { url: 'theclimb_sillim', name: 'the_climb_sillim', ko: '신림' },
-  { url: 'theclimb_sinsa', name: 'the_climb_sinsa', ko: '신사' },
-  { url: 'theclimb_magok', name: 'the_climb_magok', ko: '마곡' },
-  { url: 'theclimb_sadang', name: 'the_climb_sadang', ko: '사당' },
-  { url: 'theclimb_snu', name: 'the_climb_snu', ko: '서울대' },
-  { url: 'theclimb_ilsan', name: 'the_climb_ilsan', ko: '일산' },
-  { url: 'theclimb_yeonnam', name: 'the_climb_yeonnam', ko: '연남' },
-  { url: 'theclimb_b_hongdae', name: 'the_climb_b_hongdae', ko: '홍대' },
-  { url: 'theclimb_mullae', name: 'the_climb_mullae', ko: '문래' },
-  { url: 'theclimb_isu', name: 'the_climb_isu', ko: '이수' },
-  { url: 'theclimb_yangjae', name: 'the_climb_yangjae', ko: '양재' },
-  { url: 'theclimb_gangnam', name: 'the_climb_gangnam', ko: '강남' },
-  { url: 'theclimb_seongsu', name: 'the_climb_seongsu', ko: '성수' },
-  { url: 'theclimb_nonhyeon', name: 'the_climb_nonhyeon', ko: '논현' },
-]
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string,
-)
+import { supabase } from '@/client/client'
+import { the_climbs } from '@/utils/climbs'
 
 export async function GET() {
   try {
@@ -63,8 +42,8 @@ export async function GET() {
       timeout: 100000,
     })
 
-    for (let i = 0; i < the_climb.length; i++) {
-      await page.goto(`https://www.instagram.com/${the_climb[i].url}/`, {
+    for (let i = 0; i < the_climbs.length; i++) {
+      await page.goto(`https://www.instagram.com/${the_climbs[i].url}/`, {
         waitUntil: 'networkidle0',
         timeout: 30000,
       })
@@ -136,7 +115,7 @@ export async function GET() {
       const { data: branchData } = await supabase
         .from('climbing_branch')
         .select('id')
-        .eq('branch', the_climb[i].ko)
+        .eq('branch', the_climbs[i].ko)
 
       if (branchData && branchData.length > 0) {
         const links = formatedData.map((item) => item.link)
@@ -178,7 +157,7 @@ export async function GET() {
           await supabase.from('climbing_post').insert(rowToInsert)
         }
       }
-      if (i + 1 === the_climb.length) {
+      if (i + 1 === the_climbs.length) {
         await browser.close()
         return NextResponse.json({ success: true })
       }

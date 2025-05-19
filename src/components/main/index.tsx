@@ -3,9 +3,12 @@
 import { TheClimbBranch } from '@/types/theClimbTypes'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import Logo from './logo'
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls } from '@react-three/drei'
+import Glitch from './glitch'
+import ClimbingList from './climbingList'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL as string,
@@ -36,13 +39,13 @@ function Main() {
     setSelectedBranch(key)
   }
 
-  useEffect(() => {
-    fetch('/api/naver')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data)
-      })
-  }, [])
+  // useEffect(() => {
+  //   fetch('/api/naver')
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data)
+  //     })
+  // }, [])
   // useEffect(() => {
   //   fetch('/api/test')
   //     .then((res) => res.json())
@@ -56,13 +59,22 @@ function Main() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="flex w-full max-w-[600px] flex-wrap justify-center gap-4 px-[10px]">
+      <div className="relative h-[50px] w-[300px]">
+        {/* <VFXSpan shader="glitch" className="text-[48px]">
+          THE CLIMB
+        </VFXSpan> */}
+        <Canvas>
+          <Glitch />
+          <OrbitControls enabled={false} />
+        </Canvas>
+      </div>
+      <div className="flex w-full max-w-[600px] flex-col flex-wrap justify-center gap-4 px-[10px]">
         {theClimbs &&
           theClimbs.map((climbingBranch) => {
             return (
-              <Logo
+              <ClimbingList
                 key={climbingBranch.id}
-                climbItem={climbingBranch}
+                theClimb={climbingBranch}
                 onClickLogo={(key) => onClickLogo(key)}
               />
             )
