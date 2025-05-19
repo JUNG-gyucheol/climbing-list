@@ -29,11 +29,9 @@ const VerticalSwiper: React.FC<{
         mousewheel={true}
         keyboard={{ enabled: true }}
         pagination={{ clickable: true }}
-        // onSlideChange={handleSlideChange}
         onSlideChangeTransitionEnd={handleSlideChange}
         style={{ height: `calc(100vh - 50px)` }}>
         {theClimbs.map((climbingBranch, index) => {
-          console.log(index, activeIndex)
           return (
             <SwiperSlide key={climbingBranch.id} className="relative">
               <ClimbingList
