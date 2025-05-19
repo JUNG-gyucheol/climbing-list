@@ -15,6 +15,7 @@
     "@supabase/supabase-js": "^2.49.4",
     "dayjs": "^1.11.13",
     "next": "15.3.2",
+    "next-pwa": "^5.6.0",
     "openai": "^4.100.0",
     "postprocessing": "^6.37.3",
     "puppeteer": "^24.8.2",
@@ -26,6 +27,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/next-pwa": "^5.6.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
