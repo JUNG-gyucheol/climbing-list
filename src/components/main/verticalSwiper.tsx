@@ -13,7 +13,6 @@ const VerticalSwiper: React.FC<{
 }> = ({ theClimbs, onClickLogo }) => {
   const [activeIndex, setActiveIndex] = useState(0)
 
-  console.log('activeIndex', activeIndex)
   const handleSlideChange = (swiper: SwiperType) => {
     setActiveIndex(swiper.realIndex)
   }
@@ -29,7 +28,7 @@ const VerticalSwiper: React.FC<{
         mousewheel={true}
         keyboard={{ enabled: true }}
         pagination={{ clickable: true }}
-        onSlideChangeTransitionEnd={handleSlideChange}
+        onActiveIndexChange={handleSlideChange}
         style={{ height: `calc(100vh - 50px)` }}>
         {theClimbs.map((climbingBranch, index) => {
           return (
