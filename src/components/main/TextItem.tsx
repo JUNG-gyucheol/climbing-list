@@ -1,11 +1,68 @@
 import { Text } from '@react-three/drei'
 import gsap from 'gsap'
-import { useThree } from '@react-three/fiber'
+import { useLoader, useThree } from '@react-three/fiber'
 import { useRef, useState } from 'react'
 import * as THREE from 'three'
+import { TheClimbBranch } from '@/types/theClimbTypes'
+
+const branchNameY = 0.5
+const addressY = 0.3
+const businessHoursY = 0.1
+const vertexShader = `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `
+
+const fragmentShader = `
+  uniform vec3 color;
+  uniform vec3 borderColor;
+  uniform float borderWidth;
+  varying vec2 vUv;
+
+  // 디더링용 4x4 Bayer matrix 패턴
+  float dither(vec2 uv) {
+    int x = int(mod(uv.x * 4.0, 4.0));
+    int y = int(mod(uv.y * 4.0, 4.0));
+    int index = y * 4 + x;
+    float threshold = float(index) / 16.0;
+    return threshold;
+  }
+
+  void main() {
+    float pixelSize = 24.0;
+    vec2 pixelUV = floor(vUv * pixelSize) / pixelSize;
+    
+    // 픽셀 단위로 테두리 크기 계산
+    float borderPixels = 1.0; // 테두리 픽셀 수
+    float borderSize = borderPixels / pixelSize;
+
+    // 테두리인지 확인
+    bool isBorder = 
+      (vUv.x < borderSize || vUv.x > 1.0 - borderSize ||
+       vUv.y < borderSize || vUv.y > 1.0 - borderSize);
+
+    vec3 finalColor = color;
+
+    if (isBorder) {
+      // 디더링 기반 밝기
+      float brightness = 0.8 + dither(vUv) * 0.2;
+
+      // 도트 무늬 추가 (체커보드 스타일)
+      float checker = mod(floor(vUv.x * pixelSize) + floor(vUv.y * pixelSize), 2.0);
+      float dotFactor = mix(0.9, 1.1, checker); // checker 0이면 0.9, 1이면 1.1
+      
+      finalColor = borderColor * brightness * dotFactor;
+    }
+
+    gl_FragColor = vec4(finalColor, 1.0);
+  }
+`
 
 const TextItem: React.FC<{
-  branch: string
+  branch: TheClimbBranch
   textPosition:
     | {
         x: number
@@ -22,8 +79,10 @@ const TextItem: React.FC<{
   const { camera } = useThree()
 
   // Card dimensions
-  const cardWidth = 1
-  const cardHeight = 1
+  const cardWidth = 1.3
+  const cardHeight = 1.5
+
+  const texture = useLoader(THREE.TextureLoader, '/sinlim.jpg')
 
   const moveCamera = (targetPosition: THREE.Vector3) => {
     // 카메라가 바라볼 위치
@@ -120,28 +179,111 @@ const TextItem: React.FC<{
   return (
     <group
       position={[
-        Math.sin((index / totalItems) * Math.PI * 2) * 3,
-        0.5, // 바닥에서 약간 띄우기
-        Math.cos((index / totalItems) * Math.PI * 2) * 3,
+        Math.sin((index / totalItems) * Math.PI * 2) * 4,
+        1, // 바닥에서 약간 띄우기
+        Math.cos((index / totalItems) * Math.PI * 2) * 4,
       ]}
       rotation={[0, (index / totalItems) * Math.PI * 2, 0]}>
+      {/* 뒷면 이미지 */}
+      <mesh position={[0, 0, -0.01]}>
+        <planeGeometry args={[cardWidth, cardHeight]} />
+        <meshBasicMaterial map={texture} side={THREE.BackSide} />
+      </mesh>
+
       <mesh
         ref={meshRef}
         onClick={handleClick}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}>
         <planeGeometry args={[cardWidth, cardHeight]} />
-        <meshStandardMaterial color="#86e569" side={THREE.DoubleSide} />
+        <shaderMaterial
+          side={THREE.DoubleSide}
+          vertexShader={vertexShader}
+          fragmentShader={fragmentShader}
+          uniforms={{
+            color: { value: new THREE.Color('#1c1c3c') },
+            borderColor: { value: new THREE.Color('#555555') },
+            borderWidth: { value: 0.02 },
+          }}
+        />
         <Text
           ref={textRef}
           font="/fonts/DungGeunMo.otf"
           fontSize={0.15}
           color="white"
-          position={[0, 0, 0.01]}
+          position={[0, branchNameY, 0.01]}
+          anchorX="center"
+          anchorY="middle"
+          strokeWidth={0.003} // 외곽선 두께 추가
+          strokeColor="#f51414">
+          {branch.branch}
+        </Text>
+        <Text
+          ref={textRef}
+          font="/fonts/DungGeunMo.otf"
+          fontSize={0.15}
+          color="red"
+          position={[-0.0001, -0.01 + branchNameY, 0.009]}
           anchorX="center"
           anchorY="middle">
-          {branch}
+          {branch.branch}
         </Text>
+        <Text
+          ref={textRef}
+          font="/fonts/DungGeunMo.otf"
+          fontSize={0.15}
+          color="red"
+          position={[-0.0001, -0.02 + branchNameY, 0.008]}
+          anchorX="center"
+          anchorY="middle">
+          {branch.branch}
+        </Text>
+
+        {/* 주소 */}
+        <Text
+          font="/fonts/DungGeunMo.otf"
+          fontSize={0.08}
+          color="white"
+          position={[0, 0 + addressY, 0.01]}
+          anchorX="center"
+          anchorY="middle">
+          {branch.address
+            .split(' ')
+            .slice(0, 4)
+            .map((item) => {
+              return `${item} `
+            })}
+        </Text>
+        <Text
+          font="/fonts/DungGeunMo.otf"
+          fontSize={0.08}
+          color="white"
+          position={[0, -0.1 + addressY, 0.01]}
+          anchorX="center"
+          anchorY="middle">
+          {branch.address
+            .split(' ')
+            .slice(4)
+            .map((item) => {
+              return `${item} `
+            })}
+        </Text>
+
+        {/* 영업시간 */}
+        {branch.business_hours.map((item, index) => {
+          return (
+            <Text
+              key={index}
+              font="/fonts/DungGeunMo.otf"
+              fontSize={0.08}
+              color="white"
+              position={[0, index * -businessHoursY, 0.01]}
+              anchorX="center"
+              anchorY="middle">
+              {`${item[0]} ${item[1]}`}
+            </Text>
+          )
+        })}
       </mesh>
     </group>
   )

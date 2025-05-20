@@ -74,14 +74,14 @@ function Main() {
             width: '100%',
           }}
           camera={{
-            position: [0, 1.2, 6],
+            position: [0, 1.4, 8],
           }}
           shadows>
           <ReflectFloor />
           <OrbitControls
             enabled={true}
-            minPolarAngle={Math.PI / 2.3} // 수직 각도의 최소값 조정 (60도)
-            maxPolarAngle={Math.PI / 2.3} // 수직 각도의 최대값 조정 (60도)
+            minPolarAngle={Math.PI / 2.5} // 수직 각도의 최소값 조정 (60도)
+            maxPolarAngle={Math.PI / 2.5} // 수직 각도의 최대값 조정 (60도)
             enableZoom={false}
             enablePan={false}
           />
@@ -90,7 +90,7 @@ function Main() {
               return (
                 <TextItem
                   key={branch.branch}
-                  branch={branch.branch}
+                  branch={branch}
                   setTextPosition={(x, y) => {
                     setTextPosition((prev) => {
                       if (prev?.find((item) => item.x === x && item.y === y)) {
@@ -106,12 +106,6 @@ function Main() {
               )
             })}
         </Canvas>
-        {/* {theClimbs && (
-          <VerticalSwiper
-            theClimbs={theClimbs}
-            onClickLogo={(key) => onClickLogo(key)}
-          />
-        )} */}
       </div>
       {selectedBranch && (
         <div className="flex w-full max-w-[600px] flex-wrap justify-between gap-4 px-[10px]">
