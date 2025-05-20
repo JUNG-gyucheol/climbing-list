@@ -35,7 +35,6 @@ export async function GET() {
         }, theClimb)
         await new Promise((resolve) => setTimeout(resolve, 5000))
         const url = page.url()
-        console.log(url)
 
         await page.goto(url)
         await new Promise((resolve) => setTimeout(resolve, 5000))
@@ -70,7 +69,7 @@ export async function GET() {
       await supabase
         .from('climbing_branch')
         .update({
-          address: climbingContent.address,
+          business_hours: climbingContent.business_hours,
         })
         .eq('branch', theClimb.ko)
       times.push(climbingContent)

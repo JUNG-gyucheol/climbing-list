@@ -229,7 +229,7 @@ const GlitchText = () => {
     <>
       <Text
         ref={materialRef}
-        font="/fonts/Coalition_v2.ttf"
+        font="/fonts/DungGeunMo.otf"
         fontSize={1}
         color="white"
         position={[0, 0, 4]}
@@ -240,7 +240,7 @@ const GlitchText = () => {
       </Text>
       <Text
         ref={materialRef2}
-        font="/fonts/Coalition_v2.ttf"
+        font="/fonts/DungGeunMo.otf"
         fontSize={1}
         color="white"
         position={[0, 0, 4]}

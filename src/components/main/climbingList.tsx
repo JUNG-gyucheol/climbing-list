@@ -14,9 +14,16 @@ const ClimbingList: React.FC<{
   const [isOpen, setIsOpen] = useState(false)
 
   // console.log('slideData', slideData)
+
+  const getTranslateY = () => {
+    return index === activeIndex ? 50 : 55
+  }
   return (
     <div
-      className={`${index === activeIndex ? 'bg-amber-300' : 'scale-95 bg-white opacity-50'} absolute top-[50%] flex h-[600px] w-full translate-y-[-50%] flex-col items-center justify-center gap-[20px] rounded-[10px] border-[1px] border-amber-300 p-[10px] transition-all duration-300`}>
+      style={{
+        transform: `translateY(-${getTranslateY()}%)`,
+      }}
+      className={`${index === activeIndex ? 'bg-amber-300' : 'scale-90 bg-white opacity-70'} absolute top-[50%] left-[50%] flex h-[450px] w-[300px] translate-x-[-50%] flex-col items-center justify-center gap-[20px] rounded-[10px] border-[1px] border-amber-300 p-[10px] transition-all duration-300`}>
       <div>
         <Logo
           key={theClimb.id}
@@ -38,7 +45,7 @@ const ClimbingList: React.FC<{
             setIsOpen(false)
           }}>
           <span className="text-[18px] font-bold">
-            {`${dayjs().format('MM/DD')}(${dayjs().get('d') === 0 ? theClimb.business_hours[6][0] : theClimb.business_hours[dayjs().get('d') - 1][0]}) ${dayjs().get('d') === 0 ? theClimb.business_hours[6][1] : theClimb.business_hours[dayjs().get('d')][1]}`}
+            {`${dayjs().format('MM/DD')}(${theClimb.business_hours[0][0]}) ${theClimb.business_hours[0][1]}`}
           </span>
           <span className={`${isOpen ? 'rotate-180' : ''}`}>
             <FaChevronDown />

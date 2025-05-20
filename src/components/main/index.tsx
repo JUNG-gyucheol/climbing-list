@@ -8,7 +8,8 @@ import Link from 'next/link'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import Glitch from './glitch'
-import VerticalSwiper from './verticalSwiper'
+import TextItem from './TextItem'
+import ReflectFloor from './reflectfloor'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL as string,
@@ -17,7 +18,8 @@ const supabase = createClient(
 
 function Main() {
   const [theClimbs, setTheClimbs] = useState<TheClimbBranch[]>()
-  const [selectedBranch, setSelectedBranch] = useState<undefined | number>()
+  const [selectedBranch] = useState<undefined | number>()
+  const [textPosition, setTextPosition] = useState<{ x: number; y: number }[]>()
 
   useEffect(() => {
     ;(async () => {
@@ -35,10 +37,6 @@ function Main() {
     })()
   }, [])
 
-  const onClickLogo = (key: number) => {
-    setSelectedBranch(key)
-  }
-
   // useEffect(() => {
   //   fetch('/api/naver')
   //     .then((res) => res.json())
@@ -46,6 +44,7 @@ function Main() {
   //       console.log(data)
   //     })
   // }, [])
+
   // useEffect(() => {
   //   fetch('/api/test')
   //     .then((res) => res.json())
@@ -59,7 +58,7 @@ function Main() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="relative h-[50px] w-[300px]">
+      <div className="relative my-[10px] h-[50px] w-[300px]">
         {/* <VFXSpan shader="glitch" className="text-[48px]">
           THE CLIMB
         </VFXSpan> */}
@@ -69,23 +68,50 @@ function Main() {
         </Canvas>
       </div>
       <div className="flex w-full max-w-[600px] flex-col flex-wrap justify-center gap-4">
-        {theClimbs && (
+        <Canvas
+          style={{
+            height: 'calc(100vh - 70px)',
+            width: '100%',
+          }}
+          camera={{
+            position: [0, 1.2, 6],
+          }}
+          shadows>
+          <ReflectFloor />
+          <OrbitControls
+            enabled={true}
+            minPolarAngle={Math.PI / 2.3} // 수직 각도의 최소값 조정 (60도)
+            maxPolarAngle={Math.PI / 2.3} // 수직 각도의 최대값 조정 (60도)
+            enableZoom={false}
+            enablePan={false}
+          />
+          {theClimbs &&
+            theClimbs.map((branch, index, array) => {
+              return (
+                <TextItem
+                  key={branch.branch}
+                  branch={branch.branch}
+                  setTextPosition={(x, y) => {
+                    setTextPosition((prev) => {
+                      if (prev?.find((item) => item.x === x && item.y === y)) {
+                        return prev
+                      }
+                      return [...(prev || []), { x: x, y: y }]
+                    })
+                  }}
+                  textPosition={textPosition}
+                  index={index}
+                  totalItems={array.length}
+                />
+              )
+            })}
+        </Canvas>
+        {/* {theClimbs && (
           <VerticalSwiper
             theClimbs={theClimbs}
             onClickLogo={(key) => onClickLogo(key)}
           />
-        )}
-        {/* {theClimbs &&
-          theClimbs.map((climbingBranch, index) => {
-            return (
-              <ClimbingList
-                key={climbingBranch.id}
-                theClimb={climbingBranch}
-                onClickLogo={(key) => onClickLogo(key)}
-                index={index}
-              />
-            )
-          })} */}
+        )} */}
       </div>
       {selectedBranch && (
         <div className="flex w-full max-w-[600px] flex-wrap justify-between gap-4 px-[10px]">
