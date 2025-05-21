@@ -2,7 +2,7 @@
 
 더클라임이라는 클라이밍장 영업시간, 주소, 지점을 보여주고 있습니다. Three.js를 활용한 3D 인터랙티브 요소와 반응형 디자인을 결합하여 제작되었습니다.
 
-https://github.com/JUNG-gyucheol/climbing-list/test.mp4
+- 라이브 데모: https://climbing-list.vercel.app/
 
 ## 🌟 주요 기능
 
@@ -54,4 +54,4 @@ yarn build
 
 이 웹사이트는 [배포 플랫폼]에 배포되어 있습니다.
 
-- 라이브 데모: [your-website-url]
+- 라이브 데모: https://climbing-list.vercel.app/
