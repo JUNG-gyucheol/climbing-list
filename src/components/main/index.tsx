@@ -10,6 +10,7 @@ import { OrbitControls } from '@react-three/drei'
 import Glitch from './glitch'
 import TextItem from './TextItem'
 import ReflectFloor from './reflectfloor'
+import RetroStars from './retroStars'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL as string,
@@ -55,6 +56,16 @@ function Main() {
   //       console.error(err)
   //     })
   // }, [])
+  // useEffect(() => {
+  //   fetch('/api/download')
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data)
+  //     })
+  //     .catch((err) => {
+  //       console.error(err)
+  //     })
+  // }, [])
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -77,6 +88,7 @@ function Main() {
             position: [0, 1.4, 8],
           }}
           shadows>
+          <RetroStars />
           <ReflectFloor />
           <OrbitControls
             enabled={true}
