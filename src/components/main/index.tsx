@@ -1,10 +1,8 @@
 'use client'
 
 import { TheClimbBranch } from '@/types/theClimbTypes'
-import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import Link from 'next/link'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import Glitch from './glitch'
@@ -19,20 +17,16 @@ const supabase = createClient(
 
 function Main() {
   const [theClimbs, setTheClimbs] = useState<TheClimbBranch[]>()
-  const [selectedBranch] = useState<undefined | number>()
   const [textPosition, setTextPosition] = useState<{ x: number; y: number }[]>()
 
   useEffect(() => {
     ;(async () => {
-      const { data } = await supabase
-        .from('climbing_branch')
-        .select(
-          `
-        *,
-        climbing_post (*)
+      const { data } = await supabase.from('climbing_branch').select(
+        `
+        *
       `,
-        )
-        .order('date', { foreignTable: 'climbing_post', ascending: false })
+      )
+
       console.log(data)
       setTheClimbs(data as TheClimbBranch[])
     })()
@@ -119,7 +113,7 @@ function Main() {
             })}
         </Canvas>
       </div>
-      {selectedBranch && (
+      {/* {selectedBranch && (
         <div className="flex w-full max-w-[600px] flex-wrap justify-between gap-4 px-[10px]">
           {theClimbs &&
             theClimbs
@@ -140,7 +134,7 @@ function Main() {
                 )
               })}
         </div>
-      )}
+      )} */}
     </div>
   )
 }
